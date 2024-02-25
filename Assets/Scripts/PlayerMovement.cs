@@ -5,65 +5,64 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    GameObject m_Player;
-    Vector3 m_PlayerMovement;
+    GameObject player;
 
-    [SerializeField]
-    float m_PlayerSpeed = 5f;
+    public float playerSpeed = 40f;
+    public float playerNormalSpeed = 40f;
+    public float maxSpeed = 60f;
+    public float minSpeed = 20f;
+    public float incrementSpeed = 10f;
 
-    [SerializeField]
-    float m_IncrementPlayerSpeed = 5f;
-
-    [SerializeField]
-    float m_DecrementPlayerSpeed = 5f;
-
-    Rigidbody m_Rigidbody;
-
-    public Vector2 m_Turn;
-    public float m_TurnSensitivity = 0.5f;
+    public Vector2 turn;
+    public float turnSensitivity = 0.5f;
 
     void Start()
     {
-        m_Rigidbody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
     }
-
     void Update()
     {
-        transform.position += transform.forward * m_PlayerSpeed * Time.deltaTime;
+        transform.position += transform.forward * playerSpeed * Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKey(KeyCode.W))
         {
-            m_PlayerSpeed = m_PlayerSpeed + m_IncrementPlayerSpeed;
+            if (playerSpeed <= maxSpeed) 
+            {
+                playerSpeed += incrementSpeed * Time.deltaTime;
+            }
         }
-        if (Input.GetKeyUp(KeyCode.W))
+        else
         {
-            m_PlayerSpeed = m_PlayerSpeed - m_IncrementPlayerSpeed;
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            m_PlayerSpeed = m_PlayerSpeed - m_DecrementPlayerSpeed;
-        }
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            m_PlayerSpeed = m_PlayerSpeed + m_DecrementPlayerSpeed;
+            if (playerSpeed >= playerNormalSpeed)
+            {
+                playerSpeed -= incrementSpeed * Time.deltaTime;
+            }
         }
 
-        m_Turn.x += Input.GetAxis("Mouse X") * m_TurnSensitivity;
-        m_Turn.y += Input.GetAxis("Mouse Y") * m_TurnSensitivity;
-        transform.localRotation = Quaternion.Euler(-m_Turn.y, m_Turn.x, 0);
+        if (Input.GetKey(KeyCode.S))
+        {
+            if (playerSpeed >= minSpeed)
+            {
+                playerSpeed -= incrementSpeed * Time.deltaTime;
+            }
+        }
+        else
+        {
+            if (playerSpeed <= playerNormalSpeed)
+            {
+                playerSpeed += incrementSpeed * Time.deltaTime;
+            }
+        }
+
+        turn.x += Input.GetAxis("Mouse X") * turnSensitivity;
+        turn.y += Input.GetAxis("Mouse Y") * turnSensitivity;
+        transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
     }
-
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Chocaste");
+        Debug.Log("Chocaste, has perdido");
+        Object.Destroy(player);
 
-        Object.Destroy(m_Player);
-        Debug.Log("Has perdido");
+        //añadir excepción de mi propia bala
     }
-
 }
-
-
-
