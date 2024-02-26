@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
     GameObject player;
-    Rigidbody rigidbody;
+    Rigidbody playerRb;
 
-    public float playerSpeed;
+    public float playerSpeed = 40f;
     public float playerNormalSpeed = 40f;
     public float maximumSpeed = 60f;
     public float minimumSpeed = 20f;
@@ -27,30 +29,46 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource audioMovement;
     bool needAudioMovement = false;
 
+    public AudioSource audioExplosion;
+    bool needAudioExplosion = false;
+
+    [SerializeField]
+    GameObject turboVFX1;
+    [SerializeField]
+    GameObject turboVFX2;
+
+    public ParticleSystem playerExplosionVFX;
+
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        playerRb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         respawnTimerActivation = false;
-        playerSpeed = 40f;
 
         if (needAudioMovement == true)
         {
             audioMovement.Play();
         }
+
     }
     void Update()
     {
-        transform.position += transform.forward * playerSpeed * Time.deltaTime;
+        if (respawnTimerActivation == false)
+        {
+            transform.position += transform.forward * playerSpeed * Time.deltaTime;
+            turn.x += Input.GetAxis("Mouse X") * turnSensitivity;
+            turn.y += Input.GetAxis("Mouse Y") * turnSensitivity;
+            transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
+        }
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W)) //Aceleración
         {
             if (playerSpeed <= maximumSpeed) 
             {
                 playerSpeed += incrementSpeed * Time.deltaTime;
             }
         }
-        else
+        else //Vuelta a velocidad normal
         {
             if (playerSpeed >= playerNormalSpeed)
             {
@@ -58,14 +76,14 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S)) //Freno
         {
             if (playerSpeed >= minimumSpeed)
             {
                 playerSpeed -= incrementSpeed * Time.deltaTime;
             }
         }
-        else
+        else //Vuelta a velocidad normal
         {
             if (playerSpeed <= playerNormalSpeed)
             {
@@ -75,50 +93,43 @@ public class PlayerMovement : MonoBehaviour
         if (respawnTimerActivation == true)
         {
             respawnTimer += Time.deltaTime;
-            playerSpeed = 0f;
-            Debug.Log(respawnTimer);
-            if (respawnTimer >= 2)
+
+            if (respawnTimer >= 3)
             {
                 respawnTimer = 0;
                 respawnTimerActivation = false;
-                Respawn();
+                SceneManager.LoadScene(0);
             }
         }
-
-        turn.x += Input.GetAxis("Mouse X") * turnSensitivity;
-        turn.y += Input.GetAxis("Mouse Y") * turnSensitivity;
-        transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
     }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Terrain") || collision.gameObject.CompareTag("Enemy"))
         {
-            respawnTimerActivation = true;
-            rigidbody.isKinematic = true;  //desactiva las físicas
-            rigidbody.GetComponent<Renderer>().enabled = false; //desactiva la malla para que no se vea
-            playerCrosshair.SetActive(false); //desactiva el canvas del crosshair
+            respawnTimerActivation = true; //activa timer 
+            Destroy(playerCrosshair); //desactiva el canvas del crosshair
+            playerRb.GetComponent<Renderer>().enabled = false; //desactiva jugador (desactiva la malla porque si desactivo con Destroy o SetActive deja de funcionar)
+            playerRb.isKinematic = false; //deja estático el player para que la cámara no se vaya (junto con el primer if del update)
+
             needAudioMovement = false;
             if (needAudioMovement == false)
             {
                 audioMovement.Stop();
             }
-            /*Explosion.Play();
-            Explosion.transform.position = transform.position;*/
-        }
-    }
-    private void Respawn()
-    {
-        playerSpeed = 40f;
-        transform.position = respawnPoint.transform.position;
-        transform.rotation = respawnPoint.transform.rotation;
-        gameObject.SetActive(true);
-        rigidbody.isKinematic = false;
-        rigidbody.GetComponent<Renderer>().enabled = true;
-        playerCrosshair.SetActive(true);
-        needAudioMovement = true;
-        if (needAudioMovement == true)
-        {
-            audioMovement.Play();
+
+            needAudioExplosion = true;
+            if (needAudioExplosion == true)
+            {
+                audioExplosion.Play();
+            }
+            
+            playerExplosionVFX.Play();
+            playerExplosionVFX.transform.position = transform.position;
+
+            Destroy(turboVFX1);
+            Destroy(turboVFX2);
+
+            //Explosion.transform.position = transform.position;
         }
     }
 }

@@ -11,9 +11,16 @@ public class EnemyBehaviour : MonoBehaviour
 
     public float rotationSpeed = 5f;
 
+    public AudioSource audioEnemyExplosion;
+    bool needAudioEnemyExplosion;
+
+    public ParticleSystem enemyExplosionVFX;
+
     void Start()
     {
         currentWaypoint = 0;
+        needAudioEnemyExplosion = false;
+
     }
 
     void Update()
@@ -37,6 +44,15 @@ public class EnemyBehaviour : MonoBehaviour
         if (collision.gameObject.CompareTag("Bullet"))
         { 
             Destroy(gameObject);
+            enemyExplosionVFX.Play();
+            enemyExplosionVFX.transform.position = transform.position;
+
+            needAudioEnemyExplosion = true;
+            if(needAudioEnemyExplosion == true)
+            {
+                audioEnemyExplosion.Play();
+            }
+
         }
     }
 }
