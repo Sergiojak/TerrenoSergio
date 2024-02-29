@@ -27,7 +27,7 @@ public class CinematicBehaviours : MonoBehaviour
         transform.position += transform.forward * cinematicPlayerSpeed * Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Space) && cinematicSkipped == false)
         {
-            SkipCinematic(783f);
+            SkipCinematic(1020f);
             cinematicSkipped = true;
         }
     }

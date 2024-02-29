@@ -7,7 +7,7 @@ public class EnemyBehaviour : MonoBehaviour
 {
     public Transform[] waypoints;
     int currentWaypoint;
-    float enemyMovementSpeed = 40f;
+    public float enemyMovementSpeed = 40f;
 
     public float rotationSpeed = 5f;
 
@@ -16,11 +16,11 @@ public class EnemyBehaviour : MonoBehaviour
 
     public ParticleSystem enemyExplosionVFX;
 
+
     void Start()
     {
         currentWaypoint = 0;
         needAudioEnemyExplosion = false;
-
     }
 
     void Update()
@@ -51,8 +51,7 @@ public class EnemyBehaviour : MonoBehaviour
             if(needAudioEnemyExplosion == true)
             {
                 audioEnemyExplosion.Play();
-            }
-
+            }    
         }
     }
 }
