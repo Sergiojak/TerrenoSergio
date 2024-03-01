@@ -44,8 +44,9 @@ public class EnemyBehaviour : MonoBehaviour
         if (collision.gameObject.CompareTag("Bullet"))
         { 
             Destroy(gameObject);
-            enemyExplosionVFX.Play();
             enemyExplosionVFX.transform.position = transform.position;
+            enemyExplosionVFX.Play();
+
 
             needAudioEnemyExplosion = true;
             if(needAudioEnemyExplosion == true)

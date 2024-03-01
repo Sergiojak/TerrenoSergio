@@ -35,12 +35,9 @@ public class PlayerShotBehaviour : MonoBehaviour
             //le añadimos un impulso para que salga disparado hacia delante de la torreta
             bullet.GetComponent<Rigidbody>().AddForce(playerTurret.transform.forward * bulletSpeed, ForceMode.Impulse);
             //para que la bala siempre esté rotada hacia delante
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, playerTurret.transform.rotation, Time.deltaTime);
-
-           
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, playerTurret.transform.rotation, Time.deltaTime);    
+            
             audioShot.Play();
-          
-
         }
         //Hace falta tener el Rigidbody en el prefab, no te olvides de ponerlo
     }
