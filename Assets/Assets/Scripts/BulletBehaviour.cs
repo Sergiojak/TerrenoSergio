@@ -9,7 +9,6 @@ public class BulletBehaviour : MonoBehaviour
     //Audio y partículas
     public AudioSource audioBulletHit;
     bool needAudioBulletHit;
-    public ParticleSystem bulletExplosionVFX;
 
     //Temporizador
     float bulletTimer = 0.0f;
@@ -43,7 +42,7 @@ public class BulletBehaviour : MonoBehaviour
            this.gameObject.SetActive(false);
 
             //y hacemos que lo devuelva a la pool con el singletone y la función designada
-            BulletPool.Instance.DevolverObjeto(this.gameObject);
+            BulletPool.instance.DevolverObjeto(this.gameObject);
         }
     }
 
@@ -53,9 +52,6 @@ public class BulletBehaviour : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Destroy(this);
-
-            bulletExplosionVFX.Play();
-            bulletExplosionVFX.transform.position = transform.position;
 
             needAudioBulletHit = true;
             if (needAudioBulletHit == true) 

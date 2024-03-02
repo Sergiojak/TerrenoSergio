@@ -41,7 +41,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Bullet"))
+        if (collision.gameObject.CompareTag("Bullet") || collision.gameObject.CompareTag("Bomb"))
         { 
             Destroy(gameObject);
             enemyExplosionVFX.transform.position = transform.position;
@@ -52,7 +52,9 @@ public class EnemyBehaviour : MonoBehaviour
             if(needAudioEnemyExplosion == true)
             {
                 audioEnemyExplosion.Play();
-            }    
+                audioEnemyExplosion.transform.position = transform.position;
+
+            }
         }
     }
 }

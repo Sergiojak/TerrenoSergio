@@ -18,7 +18,7 @@ public class PlayerShotBehaviour : MonoBehaviour
 
     void Start()
     {
-        bulletPool = BulletPool.Instance;
+        bulletPool = BulletPool.instance;
     }
 
     void Update()
