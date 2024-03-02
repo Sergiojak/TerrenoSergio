@@ -11,6 +11,9 @@ public class BombBehaviour : MonoBehaviour
     bool needBombExplosion;
     public ParticleSystem bombExplosionVFX;
 
+    public AudioSource bombFalling;
+
+
     //Temporizador
     float bombTimer = 0.0f;
     //Tiempo máximo que dure la bala antes de desaparecer
@@ -21,6 +24,7 @@ public class BombBehaviour : MonoBehaviour
     void OnEnable()
     {
         bombTimer = 0.0f;
+        bombFalling.Play();
     }
     //El OnDisable salta cuando se Desactiva el objeto 
 
@@ -63,5 +67,7 @@ public class BombBehaviour : MonoBehaviour
 
             needBombExplosion = false;
         }
+        bombFalling.Stop();
+
     }
 }

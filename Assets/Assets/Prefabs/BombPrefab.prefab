@@ -114,6 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioBombExplosion: {fileID: 0}
   bombExplosionVFX: {fileID: 0}
+  bombFalling: {fileID: 0}
   bombMaxTime: 5
 --- !u!54 &8477647582052953617
 Rigidbody:

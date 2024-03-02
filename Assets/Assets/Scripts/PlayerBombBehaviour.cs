@@ -10,7 +10,6 @@ public class PlayerBombBehaviour : MonoBehaviour
     public bool bombUsed = false;
     public float bombTimer = 0;
 
-    public AudioSource bombFalling;
 
     void Start()
     {
@@ -28,7 +27,6 @@ public class PlayerBombBehaviour : MonoBehaviour
                 //que su posición sea la misma que el cañón/torreta del jugador
                 bomb.transform.position = playerBomb.transform.position;
                 bomb.GetComponent<Rigidbody>().velocity = Vector3.forward;
-                bombFalling.Play();
                 bombUsed = true;
             }
         }
