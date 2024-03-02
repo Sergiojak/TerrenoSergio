@@ -33,6 +33,8 @@ public class EndGameScreen : MonoBehaviour
     public CanvasGroup loseBackgroundImageCanvas;
 
     public AudioSource winMusic;
+    public AudioSource youWinSound;
+
 
     public AudioSource loseMusic;
     public bool needLoseMusic = false;
@@ -56,6 +58,7 @@ public class EndGameScreen : MonoBehaviour
             backgroundInGameMusic.Stop();
             player.SetActive(false);
             winBackgroundImageCanvas.SetActive(true);
+            youWinSound.Play();
         }
     }
 

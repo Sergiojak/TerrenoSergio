@@ -39,12 +39,20 @@ public class PlayerBehaviour : MonoBehaviour
 
     public EndGameScreen gameEnding;
 
+    //PowerUp SpeedBoost
+    public float playerPowerUpSpeed = 40f;
+    bool needPlayerBoost;
+    float playerBoostDuration;
+
+    public bool maxSpeedReached = false;
+
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
         respawnTimerActivation = false;
+        needPlayerBoost = false;
 
         if (needAudioMovement == true)
         {
@@ -63,18 +71,44 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W)) //Aceleración
         {
-            if (playerSpeed <= maximumSpeed) 
+            if (playerSpeed <= maximumSpeed && maxSpeedReached == false) //si su velocidad es menor que la máxima y no la ha alcanzado (con el powerup por ejemplo)
             {
-                playerSpeed += incrementSpeed * Time.deltaTime;
+                playerSpeed += incrementSpeed * Time.deltaTime; //pues que aumente
+            }
+            if (playerSpeed >= maximumSpeed) //si su velocidad es mayor que la maxima
+            {
+                maxSpeedReached = true; //indicamos que ha llegado al max
+                if(maxSpeedReached == true)
+                {
+                    playerSpeed -= incrementSpeed * Time.deltaTime; //asi que se reduzca hasta la maxima (si la tecla W está pulsada)
+                    maxSpeedReached = false;
+                }
             }
         }
         else //Vuelta a velocidad normal
         {
-            if (playerSpeed >= playerNormalSpeed)
+            if (playerSpeed >= playerNormalSpeed) //si se suelta la W pues que vuelva a su velocidad normal
             {
                 playerSpeed -= incrementSpeed * Time.deltaTime;
             }
         }
+
+        //Power-Up boost Speed
+        if (needPlayerBoost == true)
+        {
+            playerSpeed += playerPowerUpSpeed * Time.deltaTime;
+            playerBoostDuration += Time.deltaTime;
+        }
+        if (playerBoostDuration >= 1f) //duración del boost
+        {
+            needPlayerBoost = false;
+            playerBoostDuration = 0f;
+            if (playerSpeed >= playerNormalSpeed) //vuelve a la velocidad normal
+            {
+                playerSpeed -= playerPowerUpSpeed * Time.deltaTime;
+            }
+        }
+       
 
         if (Input.GetKey(KeyCode.S)) //Freno
         {
@@ -130,5 +164,12 @@ public class PlayerBehaviour : MonoBehaviour
 
             gameEnding.LoseGame();
         }
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+       if(other.CompareTag("Power-Up"))
+       {
+            needPlayerBoost = true;
+       }
     }
 }
