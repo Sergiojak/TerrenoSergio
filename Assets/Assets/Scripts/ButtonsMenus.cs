@@ -7,7 +7,7 @@ public class ButtonsMenus : MonoBehaviour
 {
     public void StartGameButton()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
     public void ExitGameButton()
     {

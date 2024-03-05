@@ -131,7 +131,6 @@ public class PlayerBehaviour : MonoBehaviour
             if (respawnTimer >= 3)
             {
                 respawnTimer = 0;
-                //SceneManager.LoadScene(0);
             }
         }
     }
