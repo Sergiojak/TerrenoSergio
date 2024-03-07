@@ -5,17 +5,17 @@ using UnityEngine;
 public class PowerUpBehaviour : MonoBehaviour
 {
     [SerializeField]
-    GameObject limitMinX;
+    GameObject minimumXPowerUpSpawnArea;
     [SerializeField]
-    GameObject limitMaxX;
+    GameObject maximumXPowerUpSpawnArea;
     [SerializeField]
-    GameObject limitMinZ;
+    GameObject minimumZPowerUpSpawnArea;
     [SerializeField]
-    GameObject limitMaxZ;
+    GameObject maximumZPowerUpSpawnArea;
     [SerializeField]
-    GameObject heightlimit1;
+    GameObject minimumYPowerUpSpawnArea;
     [SerializeField]
-    GameObject heightlimit2;
+    GameObject maximumYPowerUpSpawnArea;
 
     float minPositionX;
     float maxPositionX;
@@ -23,20 +23,20 @@ public class PowerUpBehaviour : MonoBehaviour
     float minPositionZ;
     float maxPositionZ;
 
-    float minHeight;
-    float maxHeight;
+    float minPositionY;
+    float maxPositionY;
 
     public AudioSource powerUpSoundEffect;
 
     private void Start()
     {
-        minPositionX = limitMinX.transform.position.x;
-        maxPositionX = limitMaxX.transform.position.x;
-        minPositionZ = limitMinZ.transform.position.z;
-        maxPositionZ = limitMaxZ.transform.position.z;
+        minPositionX = minimumXPowerUpSpawnArea.transform.position.x;
+        maxPositionX = maximumXPowerUpSpawnArea.transform.position.x;
+        minPositionZ = minimumZPowerUpSpawnArea.transform.position.z;
+        maxPositionZ = maximumZPowerUpSpawnArea.transform.position.z;
 
-        minHeight = heightlimit1.transform.position.y;
-        maxHeight = heightlimit2.transform.position.y;
+        minPositionY = minimumYPowerUpSpawnArea.transform.position.y;
+        maxPositionY = maximumYPowerUpSpawnArea.transform.position.y;
 
     }
 
@@ -49,7 +49,7 @@ public class PowerUpBehaviour : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            transform.position = new Vector3(Random.Range(minPositionX, maxPositionX), Random.Range(minHeight, maxHeight), Random.Range(minPositionZ, maxPositionZ));
+            transform.position = new Vector3(Random.Range(minPositionX, maxPositionX), Random.Range(minPositionY, maxPositionY), Random.Range(minPositionZ, maxPositionZ));
             powerUpSoundEffect.Play();
         }
     }
