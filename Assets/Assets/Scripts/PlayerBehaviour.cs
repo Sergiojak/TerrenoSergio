@@ -2,22 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
+    //NOTA: EL SCRIPT DE DISPARO (PlayerShotBehaviour) ESTÁ EN LA TORRETA DEL JUGADOR (playerTurret, hijo del Player)
+
     [SerializeField]
     GameObject player;
     Rigidbody playerRb;
 
     public float playerSpeed = 40f;
     public float playerNormalSpeed = 40f;
-    public float maximumSpeed = 60f;
-    public float minimumSpeed = 20f;
-    public float incrementSpeed = 10f;
+    public float playerMaximumSpeed = 60f;
+    public float playerMinimumSpeed = 20f;
+    public float playerIncrementSpeed = 10f;
 
-    private float respawnTimer = 0f;
-    public bool respawnTimerActivation;
+    public bool playerIsDead;
     [SerializeField]
     GameObject playerCrosshair;
 
@@ -51,7 +51,7 @@ public class PlayerBehaviour : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
-        respawnTimerActivation = false;
+        playerIsDead = false;
         needPlayerBoost = false;
 
         if (needAudioMovement == true)
@@ -61,7 +61,7 @@ public class PlayerBehaviour : MonoBehaviour
     }
     void Update()
     {
-        if (respawnTimerActivation == false)
+        if (playerIsDead == false)
         {
             transform.position += transform.forward * playerSpeed * Time.deltaTime;
             turn.x += Input.GetAxis("Mouse X") * turnSensitivity;
@@ -71,16 +71,16 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W)) //Aceleración
         {
-            if (playerSpeed <= maximumSpeed && maxSpeedReached == false) //si su velocidad es menor que la máxima y no la ha alcanzado (con el powerup por ejemplo)
+            if (playerSpeed <= playerMaximumSpeed && maxSpeedReached == false) //si su velocidad es menor que la máxima y no la ha alcanzado (con el powerup por ejemplo)
             {
-                playerSpeed += incrementSpeed * Time.deltaTime; //pues que aumente
+                playerSpeed += playerIncrementSpeed * Time.deltaTime; //pues que aumente
             }
-            if (playerSpeed >= maximumSpeed) //si su velocidad es mayor que la maxima
+            if (playerSpeed >= playerMaximumSpeed) //si su velocidad es mayor que la maxima
             {
                 maxSpeedReached = true; //indicamos que ha llegado al max
                 if(maxSpeedReached == true)
                 {
-                    playerSpeed -= incrementSpeed * Time.deltaTime; //asi que se reduzca hasta la maxima (si la tecla W está pulsada)
+                    playerSpeed -= playerIncrementSpeed * Time.deltaTime; //asi que se reduzca hasta la maxima (si la tecla W está pulsada)
                     maxSpeedReached = false;
                 }
             }
@@ -89,7 +89,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (playerSpeed >= playerNormalSpeed) //si se suelta la W pues que vuelva a su velocidad normal
             {
-                playerSpeed -= incrementSpeed * Time.deltaTime;
+                playerSpeed -= playerIncrementSpeed * Time.deltaTime;
             }
         }
 
@@ -112,25 +112,16 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (Input.GetKey(KeyCode.S)) //Freno
         {
-            if (playerSpeed >= minimumSpeed)
+            if (playerSpeed >= playerMinimumSpeed)
             {
-                playerSpeed -= incrementSpeed * Time.deltaTime;
+                playerSpeed -= playerIncrementSpeed * Time.deltaTime;
             }
         }
         else //Vuelta a velocidad normal
         {
             if (playerSpeed <= playerNormalSpeed)
             {
-                playerSpeed += incrementSpeed * Time.deltaTime;
-            }
-        }
-        if (respawnTimerActivation == true)
-        {
-            respawnTimer += Time.deltaTime;
-
-            if (respawnTimer >= 3)
-            {
-                respawnTimer = 0;
+                playerSpeed += playerIncrementSpeed * Time.deltaTime;
             }
         }
     }
@@ -138,7 +129,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Terrain") || collision.gameObject.CompareTag("Enemy"))
         {
-            respawnTimerActivation = true; //activa timer 
+            playerIsDead = true; //activa bool para deshabilitar movimiento
             Destroy(playerCrosshair); //desactiva el canvas del crosshair
             playerRb.GetComponent<Renderer>().enabled = false; //desactiva jugador (desactiva la malla porque si desactivo con Destroy o SetActive deja de funcionar)
             playerRb.isKinematic = true; //deja estático el player para que la cámara no se vaya (junto con el primer if del update)
@@ -171,4 +162,6 @@ public class PlayerBehaviour : MonoBehaviour
             needPlayerBoost = true;
        }
     }
+
+    //NOTA: EL SCRIPT DE DISPARO (PlayerShotBehaviour) ESTÁ EN LA TORRETA DEL JUGADOR (playerTurret, hijo del Player)
 }
